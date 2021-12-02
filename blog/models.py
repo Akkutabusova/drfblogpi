@@ -3,26 +3,31 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+
 def upload_to(instance, filename):
     return f'posts/{filename}'.format(filename=filename)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(_("Image"), upload_to=upload_to, default='posts/default.jpg')
+    objects = models.Manager()  # default manager
+
     def __str__(self):
         return self.name
+
 
 class Favorites(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favorite')
     category = models.ForeignKey('Category', related_name='favorite', on_delete=models.CASCADE)
+    objects = models.Manager()  # default manager
 
 
 class Post(models.Model):
-
     class PostObjects(models.Manager):
         def get_queryset(self):
-            return super().get_queryset() .filter(status='published')
+            return super().get_queryset().filter(status='published')
 
     options = (
         ('draft', 'Draft'),
@@ -41,6 +46,8 @@ class Post(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='blog_posts')
     status = models.CharField(
         max_length=10, choices=options, default='published')
+    blog_views = models.IntegerField(default=0)
+    week_views = models.IntegerField(default=0)
     objects = models.Manager()  # default manager
     postobjects = PostObjects()  # custom manager
 
@@ -50,14 +57,24 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+
+class PostArray(models.Model):
+    post = models.ForeignKey('Post', related_name='postarray', on_delete=models.CASCADE)
+    index = models.IntegerField(default=0)
+    image = models.ImageField(_("Image"), upload_to=upload_to, default='posts/default.jpg')
+    text = models.TextField()
+
+
 class Bookmark(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='bookmark')
     post = models.ForeignKey('Post', related_name='bookmark', on_delete=models.CASCADE)
+    objects = models.Manager()  # default manager
 
     class Meta:
         ordering = ['created']
+
 
 class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -65,9 +82,7 @@ class Comment(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey('Post', related_name='comments', on_delete=models.CASCADE)
+    objects = models.Manager()  # default manager
 
     class Meta:
         ordering = ['created']
-
-
-

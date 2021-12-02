@@ -20,7 +20,7 @@ urlpatterns = [
     #BLOG_API APPLICATION
     path('api/', include('blog_api.urls', namespace='blog_api')),
     #API SCHEMA AND DOCUMENTATION
-    path('docs/', include_docs_urls(title='BlogPI')),
+    path('docs/', include_docs_urls(title='BlogAPI')),
     path('schema', get_schema_view(
         title="Blog Api",
         description="API for blog api.",
