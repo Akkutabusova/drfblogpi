@@ -37,16 +37,6 @@ class PostList(generics.ListAPIView):
     serializer_class = PostSerializer
     pagination_class = LimitOffsetPagination
 
-    def finalize_response(self, request, response, *args, **kwargs):
-        print(request.data)
-        page = int(request.data.get("page", 0))
-        count = int(request.data.get("count", 10))
-        if page>0:
-            response.data = response.data[(page-1)*count:page*count]
-        else:
-            response.data = response.data[page:count]
-        return super().finalize_response(request, response, *args, **kwargs)
-
 
 class PostDetail(generics.RetrieveAPIView):
     serializer_class = PostSerializer
