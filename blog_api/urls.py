@@ -18,7 +18,7 @@ app_name = 'blog_api'
 
 urlpatterns = [
     path('posts/<int:pk>', PostDetail.as_view(), name='detailcreate'),
-    re_path('array/(?P<post>.+)/',  PostArrayDetail.as_view()),
+    re_path('arraypost/(?P<post>.+)/',  PostArrayDetail.as_view()),
     path('posts/', PostList.as_view(), name='listcreate'),
     path('search/', PostListDetailfilter.as_view(), name='postsearch'),
     # Bookmark
@@ -41,11 +41,12 @@ urlpatterns = [
     path('comments/delete/<int:pk>/', DeleteComment.as_view()),
     # Post Admin Urls
     path('admin/create/', CreatePost.as_view(), name='createpost'),
-    path('admin/array/create/', CreatePostArray.as_view(), name='createarray'),
+    path('admin/create/array/', CreatePostArray.as_view(), name='createarray'),
     path('admin/edit/postdetail/<int:pk>', AdminPostDetail.as_view(), name='admindetailpost'),
     path('admin/edit/<int:pk>/', EditPost.as_view(), name='editpost'),
-    path('admin/array/edit/<int:pk>/', EditPostArray.as_view(), name='editarray'),
+    path('admin/edit/array/<int:pk>/', EditPostArray.as_view(), name='editarray'),
     path('admin/delete/<int:pk>/', DeletePost().as_view(), name='deletepost'),
-    path('admin/array/delete/<int:pk>/', DeletePostArray().as_view(), name='deletearray'),
+    path('admin/delete/array/<int:pk>/', DeletePostArray().as_view(), name='deletearray'),
 ]
+
 
