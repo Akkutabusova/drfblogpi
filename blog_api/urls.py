@@ -17,7 +17,7 @@ app_name = 'blog_api'
 # request http://127.0.0.1:8000/dept_emp/emp_list will invoke the emp_list function defined in views.py.
 
 urlpatterns = [
-    path('posts/<int:pk>', PostDetail.as_view(), name='detailcreate'),
+    re_path('posts/(?P<post>.+)/', PostDetail.as_view(), name='detailcreate'),
     re_path('arraypost/(?P<post>.+)/',  PostArrayDetail.as_view()),
     path('posts/', PostList.as_view(), name='listcreate'),
     path('search/', PostListDetailfilter.as_view(), name='postsearch'),
@@ -27,6 +27,7 @@ urlpatterns = [
     path('bookmarks/delete/<int:pk>', DeleteBookmark.as_view(), name='deletebookmark'),
     # Category
     re_path('category/(?P<category>.+)/$', PostListCategoryfilter.as_view()),  # posts by category
+    # path('category/', CreateCategory.as_view()),
     path('categories/', PostCategoriesList.as_view(), name='listcategories'),#all categories
     path('categories/<int:pk>', PostCategoryDetail.as_view(), name='postsbycategory'),#category detail
     # Favorites

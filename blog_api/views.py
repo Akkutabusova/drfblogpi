@@ -7,9 +7,7 @@ from .serializers import PostSerializer, PostCategorySerializer, CommentSerializ
 from rest_framework.permissions import SAFE_METHODS, AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly, \
     BasePermission, IsAdminUser
 from django.shortcuts import get_object_or_404
-from datetime import datetime, date, time
-from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
+from drf_multiple_model.views import ObjectMultipleModelAPIView
 
 
 class PostUserWritePermission(BasePermission):
@@ -38,15 +36,20 @@ class PostList(generics.ListAPIView):
     pagination_class = LimitOffsetPagination
 
 
-class PostDetail(generics.RetrieveAPIView):
-    serializer_class = PostSerializer
-    queryset = Post.objects.filter()
+class PostDetail(ObjectMultipleModelAPIView):
+    pagination_class = None
 
-    def get_object(self):
-        obj = super().get_object()
-        obj.blog_views += 1
-        obj.save()
-        return obj
+    def get_querylist(self):
+        post = self.kwargs['post']
+        o = Post.postobjects.get(id=post)
+        o.blog_views += 1
+        o.save()
+        querylist = [
+            {'queryset': Post.objects.filter(id=post), 'serializer_class': PostSerializer},
+            {'queryset': PostArray.objects.filter(post=post), 'serializer_class': PostArraySerializer}
+        ]
+        return querylist
+
 
 
 class PostArrayDetail(generics.ListAPIView):
@@ -93,6 +96,18 @@ class PostListCategoryfilter(generics.ListAPIView):
 class PostCategoryDetail(generics.RetrieveAPIView):
     serializer_class = CategorySerializer
     queryset = Category.objects.filter()
+
+
+# class CreateCategory(generics.CreateAPIView):
+#     permission_classes = [IsAdminUser]
+#     serializer_class = CategorySerializer
+#     queryset = Category.objects.all()
+#
+#
+# class DeleteCategory(generics.RetrieveDestroyAPIView):
+#     permission_classes = [IsAdminUser]
+#     serializer_class = CategorySerializer
+#     queryset = Category.objects.all()
 
 
 class CategoryFavoritesfilter(generics.ListAPIView):
@@ -153,7 +168,6 @@ class EditPostArray(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
     serializer_class = PostArraySerializer
     queryset = PostArray.objects.all()
-
 
 
 class DeletePost(generics.RetrieveDestroyAPIView):

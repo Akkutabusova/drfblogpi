@@ -39,7 +39,7 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     image = models.ImageField(_("Image"), upload_to=upload_to, default='posts/default.jpg')
     excerpt = models.TextField(null=True)
-    content = models.TextField()
+    content = models.TextField(null=True)
     slug = models.SlugField(max_length=250, unique_for_date='published')
     published = models.DateTimeField(default=timezone.now)
     date = models.CharField(max_length=250, default="12.12.12")

@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import serializers
 from blog.models import Post, Category, Comment, Bookmark, Favorites, PostArray
 from django.conf import settings
@@ -23,15 +25,28 @@ class PostCategorySerializer(serializers.ModelSerializer):
 class PostArraySerializer(serializers.ModelSerializer):
     class Meta:
         model = PostArray
-        fields = ('id', 'post', 'index', 'image', 'text')
+        fields = ('id', 'index', 'image', 'text')
 
 
 class PostSerializer(serializers.ModelSerializer):
+    content = PostArraySerializer(many=True)
 
     class Meta:
         model = Post
-        fields = ('category', 'id', 'title', 'image', 'slug', 'date', 'author',
-                  'excerpt', 'content', 'status', 'blog_views')
+        # fields = ('category', 'id', 'title', 'image', 'slug', 'date', 'author',
+        #           'excerpt', 'status', 'blog_views')
+        fields = '__all__'
+        depth = 1
+
+    def create(self, validated_data):
+        data = validated_data.pop('content')
+        instance = Post.objects.create(**validated_data)
+        # content = json.load(data)
+        for object in data:
+            PostArray.objects.create(
+                post=instance, **object)
+        return instance
+
 
     # def create(self, validated_data):
     #     content_data = validated_data.pop('content')
@@ -40,18 +55,6 @@ class PostSerializer(serializers.ModelSerializer):
     #     for cd in content_data:
     #         PostArray.objects.create(post=post, **cd)
     #     return post
-
-    # def create(self, vlaidated_data):
-    #     seats = validated_data.pop('seats')
-    #     instance = MovieTicket.objects.create(
-    #         **validated_data)
-    #
-    #     for seat in seats:
-    #         Seat.objects.create(
-    #             movieticket=instance, **seats)
-    #
-    #     return instance
-
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.ReadOnlyField(source='author.username')

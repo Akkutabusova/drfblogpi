@@ -1,3 +1,5 @@
+import json
+
 from rest_framework import serializers
 from users.models import NewUser
 
@@ -19,7 +21,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password', None)
         # as long as the fields are the same, we can just use this
         instance = self.Meta.model(**validated_data)
-        if password is not None:
+        if password:
             instance.set_password(password)
         instance.save()
         return instance
