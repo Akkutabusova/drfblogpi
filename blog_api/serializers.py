@@ -33,10 +33,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        # fields = ('category', 'id', 'title', 'image', 'slug', 'date', 'author',
+        # fields = ('category', 'id', 'title', 'content', 'image', 'slug', 'date', 'author',
         #           'excerpt', 'status', 'blog_views')
         fields = '__all__'
-        depth = 1
+        # depth = 1
 
     def create(self, validated_data):
         data = validated_data.pop('content')
@@ -46,6 +46,14 @@ class PostSerializer(serializers.ModelSerializer):
             PostArray.objects.create(
                 post=instance, **object)
         return instance
+
+    def __init__(self, *args, **kwargs):
+        super(PostSerializer, self).__init__(*args, **kwargs)
+        request = self.context.get('request')
+        if request and request.method == 'POST':
+            self.Meta.depth = 0
+        else:
+            self.Meta.depth = 1
 
 
     # def create(self, validated_data):
