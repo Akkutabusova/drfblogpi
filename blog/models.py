@@ -63,7 +63,7 @@ class PostArray(models.Model):
     post = models.ForeignKey('Post', related_name='postarray', on_delete=models.CASCADE)
     index = models.IntegerField(default=0)
     image = models.ImageField(_("Image"), upload_to=upload_to, default='posts/default.jpg', null=True)
-    text = models.TextField()
+    text = models.TextField(null=True)
     objects = models.Manager()  # default manager
 
 
