@@ -70,6 +70,9 @@ class PostCategorySerializer(serializers.ModelSerializer):
 
 
 class PostArraySerializer(serializers.ModelSerializer):
+    image = Base64ImageField(
+        max_length=None, use_url=True,
+    )
     class Meta:
         model = PostArray
         fields = ('id', 'index', 'image', 'text')
@@ -135,6 +138,9 @@ class BookmarkSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    image = Base64ImageField(
+        max_length=None, use_url=True,
+    )
     class Meta:
         model = Category
         fields = ('id', 'name', 'image')
