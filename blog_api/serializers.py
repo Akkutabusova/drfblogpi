@@ -22,6 +22,10 @@ class Base64ImageField(serializers.ImageField):
 
         # Check if this is a base64 string
         if isinstance(data, six.string_types):
+            # Remove escape slashes
+            escapes = ''.join([chr(char) for char in range(1, 32)])
+            translator = str.maketrans('', '', escapes)
+            data = data.translate(translator)
             # Check if the base64 string is in the "data:" format
             if 'data:' in data and ';base64,' in data:
                 # Break out the header from the base64 content
