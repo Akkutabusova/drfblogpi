@@ -75,7 +75,7 @@ class PostCategorySerializer(serializers.ModelSerializer):
 
 class PostArraySerializer(serializers.ModelSerializer):
     image = Base64ImageField(
-        max_length=None, use_url=True,
+        max_length=None, use_url=True, allow_null=True
     )
     class Meta:
         model = PostArray
@@ -85,7 +85,7 @@ class PostArraySerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     content = PostArraySerializer(many=True)
     image = Base64ImageField(
-        max_length=None, use_url=True,
+        max_length=None, use_url=True, allow_null=True
     )
 
     class Meta:
