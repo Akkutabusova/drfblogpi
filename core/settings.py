@@ -171,7 +171,8 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',
 }
-
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 django_heroku.settings(locals())
+
+print('Settings.py MEDIA_ROOT: %s' % (MEDIA_ROOT))
