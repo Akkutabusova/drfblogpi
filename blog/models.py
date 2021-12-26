@@ -49,6 +49,7 @@ class Post(models.Model):
         max_length=10, choices=options, default='published')
     blog_views = models.IntegerField(default=0)
     week_views = models.IntegerField(default=0)
+    premium = models.BooleanField(default=False)
     objects = models.Manager()  # default manager
     postobjects = PostObjects()  # custom manager
 
